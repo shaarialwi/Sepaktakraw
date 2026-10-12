@@ -1,68 +1,44 @@
-# Sepak Takraw 3D Player Tracker — Interactive Prototype
+# Sepak Takraw 3D Tracker — Manual Match Video Analysis
 
-An HTML-only, browser-based demonstration of a sepak takraw match movement tracker. No server, build process, or API key is needed for the **demo**.
+A single-file, GitHub Pages–ready website showing a 3D-style sepak takraw court, player positions, simulated replay data, and a browser-based manual video analysis workspace.
 
-## Features
-- Isometric/overhead 3D-style court, using 13.4 m × 6.1 m dimensions with both service circles, four quarter-circles and a net.
-- Six labelled players (Tekong, Left Inside, Right Inside for each regu).
-- Animated ball, scripted player positions, and selectable example rallies.
-- Contact timeline, prev/next, pause/play, playback speed, trails, zoom and drag-to-orbit.
-- Movement metrics, speeds and distances calculated from demo coordinates.
-- Local video file preview (reference **only** — not synchronized with position data).
-- Export/import of tracked player coordinate JSON.
-- Responsive desktop and mobile layout.
+## Start
 
-**Important**: Included player coordinates, scores, plays and team names are illustrative demo data. Uploading a video does **not** detect players, track the ball or generate tracking coordinates. This requires a separate computer-vision backend.
+1. Open `index.html` in a modern desktop browser, or publish it on GitHub Pages.
+2. Under **MATCH VIDEO**, choose **Local file** to upload an MP4/WebM or **YouTube URL** to paste a public match link.
+3. Start playback using the video player. Pause and seek to a moment you want to annotate. You can use the **Go to time** control (`MM:SS`) to set the analysis playhead. For local files it also seeks the video.
+4. Under **MANUAL ANALYSIS**, select a player's marker (A1–A3 / B1–B3) or **Ball**. Choose **Top view** for easier positioning, and click the relevant location on the court. Ball height can be adjusted with its slider.
+5. Select an event and player, optionally write a note, and click **Save event at current video time**.
+6. Export JSON and save it locally. Use **Import analysis** to restore your annotated positions and events. Reattach the exact matching video file or YouTube ID to continue reviewing without losing the imported annotations.
 
-## Try it locally
-Double-click `index.html` in your browser. No installation needed.
+## What is implemented
 
-## Publish to GitHub Pages
-1. Create a new repository on GitHub (e.g. `takraw-tracker`).
-2. Upload `index.html` to the repository root, and commit.
-3. Go to **Settings → Pages**.
-4. Under **Build and deployment**, choose **Deploy from a branch** and select **main** and **/(root)**; click **Save**.
-5. After deployment, visit `https://YOUR-USERNAME.github.io/takraw-tracker/`.
+- Simulated three-rally sample with animated 3D-style movement, net, ball and estimated distances.
+- Local browser video upload with HTML5 video controls, seeking, play/pause, and playback speed.
+- YouTube iframe embed for watch links, short links, and shorts/live/embed URLs, with YouTube IFrame API integration when available.
+- Manual time entry if YouTube player access, time sync, or playback is restricted.
+- Annotating six players' court positions by clicking on the 3D court; dedicated ball placement and height controls.
+- Saving timestamped serve, receive, set, spike, roll spike, block, dig, point, fault and other rally events.
+- Downloading/importing analysis JSON, including frame coordinates, source metadata, and events.
+- Existing coordinate JSON import, demo JSON export, camera orbit, overhead camera, and movement trails.
 
-## Coordinate JSON format
-A sample file, `sample_tracking.json`, is provided. Click **Tracking JSON** in the interface to import it.
+## Important limitations
 
-```json
-{
-  "frames": [
-    { "t": 0.0,
-      "players": [
-        {"id":"A1", "x":-4.25, "y":0, "z":0},
-        {"id":"A2", "x":-1.35, "y":-2, "z":0},
-        {"id":"A3", "x":-1.35, "y":2, "z":0},
-        {"id":"B1", "x":4.25, "y":0, "z":0},
-        {"id":"B2", "x":1.35, "y":2, "z":0},
-        {"id":"B3", "x":1.35, "y":-2, "z":0}
-      ],
-      "ball":{"x":-4.25, "y":0, "z":1.2}
-    },
-    { "t": 1.0,
-      "players": [
-        {"id":"A1", "x":-4.25, "y":0, "z":0},
-        {"id":"A2", "x":-1.35, "y":-2, "z":0},
-        {"id":"A3", "x":-1.35, "y":2, "z":0},
-        {"id":"B1", "x":4.25, "y":0, "z":0},
-        {"id":"B2", "x":1.35, "y":2, "z":0},
-        {"id":"B3", "x":1.35, "y":-2, "z":0}
-      ],
-      "ball":{"x":0, "y":0, "z":2.1}
-    }
-  ]
-}
-```
+**This is a manual-analysis prototype, not an automatic AI player tracker.** Selecting a YouTube link or uploading a video does not extract players or the ball from footage. Simulated data is not a real match measurement. In manual-review mode, speed and distance statistics are only approximations derived from your manually placed position markers and are hidden until at least two positions are logged for that player.
 
-`x`: court long axis in metres (-6.7 to +6.7), where **team A/Perak** is negative and **team B/Terengganu** is positive. `y`: cross-court axis (-3.05 to +3.05). `z`: height above floor in metres. `t`: seconds from the start of the rally. IDs A1/A2/A3, B1/B2/B3 are the six players. The renderer linearly interpolates positions between supplied timestamps.
+Video stays local in your browser; this website does not upload or store your file. YouTube video content is played via YouTube's embedded player; some creators disable embedding. YouTube API functions such as seeking and getting current playback time may be unavailable due to the browser, network, or owner restrictions. When unavailable, use the embedded player's controls and manually align the analysis time field. YouTube videos are not downloaded by this project.
 
-## Path to real video-based tracking
-1. Accept footage and prepare a calibration of the court corners and perspective/homography.
-2. Run player/ball detection plus person identity tracking, using a Python backend (e.g. OpenCV + a fine-tuned detector and multi-object tracker). Detecting a fast small ball typically requires specialist training and frame-rate considerations.
-3. Fit player foot locations onto the calibrated court, filter track jitter, classify touches and attacks (where supported by data).
-4. Export timestamped player and ball coordinates in the JSON schema above. 3D ball height inferred from a single viewpoint is approximate; a calibrated multi-camera setup is better for reliable vertical trajectories.
-5. For production, use authenticated storage, consent/access policies and appropriate rights to video footage.
+The exported JSON does not contain the underlying match video. Keep the source file/YouTube link separately. This prototype does not have cloud accounts, database persistence or collaborative editing.
 
-The dashboard is compatible with GitHub Pages because it is static, but **computer vision inference would run on a separate service**, not on GitHub Pages itself.
+## GitHub Pages
+
+1. Create a public or private repository where GitHub Pages is enabled for your plan.
+2. Upload `index.html` to the repository root and commit it.
+3. In repository **Settings → Pages**, choose **Deploy from a branch**, select branch `main` and folder `/(root)`, then save.
+4. Open your published URL once Pages finishes deploying.
+
+No Node, build step, or server is needed. The code uses plain HTML, CSS, and JavaScript. Internet access is required for YouTube playback and integration.
+
+## Analysis JSON
+
+Exports use `format: "takraw-manual-analysis-v1"` and include `meta`, `positions`, `events`, `frames` for replaying the manually annotated positions. The court uses metres: length 13.4 m, width 6.1 m, with coordinates x in [-6.7, +6.7] and y in [-3.05, +3.05].
